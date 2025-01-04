@@ -1,6 +1,6 @@
 # ExcelTools
 
-VSTO Excel外接程序写的简单工具，实现的功能：
+VSTO Excel外接程序写的简单工具，下载安装包，打开***setup.exe*** 可以安装使用。实现的功能：
 
 **二维码生成**
 
