@@ -1,0 +1,10 @@
+可以去ChatGPT进行解析查询具体含义
+
+$cert = New-SelfSignedCertificate `
+    -Type CodeSigningCert `
+    -Subject "CN=ExcelTools" `
+    -CertStoreLocation "Cert:\CurrentUser\My" `
+    -NotAfter (Get-Date).AddYears(10)
+    $pwd = ConvertTo-SecureString -String "123456" -Force -AsPlainText
+    Export-PfxCertificate -Cert $cert -FilePath "C:\Temp\MyVSTOCert.pfx" -Password $pwd
+Export-Certificate -Cert $cert -FilePath "C:\Temp\MyVSTOCert.cer"
