@@ -1,9 +1,4 @@
 ﻿using Microsoft.Office.Tools.Ribbon;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Excel = Microsoft.Office.Interop.Excel;
 namespace ExcelTools
 {
     public partial class ABCToolsRibbon
@@ -14,11 +9,14 @@ namespace ExcelTools
 
         private void btnViewQRCode_Click(object sender, RibbonControlEventArgs e)
         {
-            if (Globals.ThisAddIn.myTaskPane == null)
+            var currentWorkbook = Globals.ThisAddIn.Application.ActiveWorkbook;
+
+            if (!Globals.ThisAddIn.qrPanes.ContainsKey(currentWorkbook))
             {
                 Globals.ThisAddIn.addQRPane();
+
             }
-            Globals.ThisAddIn.myTaskPane.Visible = !Globals.ThisAddIn.myTaskPane.Visible;
+            Globals.ThisAddIn.qrPanes[currentWorkbook].Visible = !Globals.ThisAddIn.qrPanes[currentWorkbook].Visible;
         }
     }
 }

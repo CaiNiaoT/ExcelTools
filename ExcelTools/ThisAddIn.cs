@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using Excel = Microsoft.Office.Interop.Excel;
-using Office = Microsoft.Office.Core;
-using Microsoft.Office.Tools.Excel;
-using System.Windows.Forms;
-using System.Windows.Controls;
-using ExcelTools.QRCodeControls;
+﻿using ExcelTools.QRCodeControls;
 using Microsoft.Office.Tools;
+using System.Collections.Generic;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace ExcelTools
 {
     public partial class ThisAddIn
     {
-        public CustomTaskPane myTaskPane;
+        public Dictionary<Excel.Workbook, QRViewerControl> qrControls = new Dictionary<Excel.Workbook, QRViewerControl>();
+        public Dictionary<Excel.Workbook, CustomTaskPane> qrPanes = new Dictionary<Excel.Workbook, CustomTaskPane>();
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             new ABCToolsRibbon();
@@ -28,19 +21,24 @@ namespace ExcelTools
         private void Application_sheetSelectionChange(object sh, Excel.Range target)
         {
             string cellValue = target.Value2?.ToString() ?? "";
+            var currentWindow = Globals.ThisAddIn.Application.ActiveWorkbook;
 
-            // 更新任务窗格内容
-            if (myTaskPane != null && myTaskPane.Visible && myTaskPane.Control is QRViewerControl control)
+            if (qrControls.ContainsKey(currentWindow))
             {
-                control.ShowQRCode(cellValue, cellValue);
+                qrControls[currentWindow].ShowQRCode(cellValue, cellValue);
             }
+
+
         }
         public void addQRPane()
         {
-            if (this.myTaskPane == null)
+            var currentBook = Globals.ThisAddIn.Application.ActiveWorkbook;
+            if (!qrControls.ContainsKey(currentBook))
             {
                 var qrViewer = new QRViewerControl();
-                myTaskPane = this.CustomTaskPanes.Add(qrViewer, "二维码显示区");
+                var myTaskPane = this.CustomTaskPanes.Add(qrViewer, "二维码显示区");
+                qrControls.Add(currentBook, qrViewer);
+                qrPanes.Add(currentBook, myTaskPane);
                 myTaskPane.Visible = false; // 默认隐藏
             }
         }
